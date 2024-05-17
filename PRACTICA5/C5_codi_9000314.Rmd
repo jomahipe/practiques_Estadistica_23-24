@@ -9,8 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 options(digits = 12)
 library(digest)
 library(coda)
-C5_dades_9000314_1704802 <- read.table('C5_dades_9000314_1704802.txt', header=TRUE, dec='.')
-ddaaddeess <- C5_dades_9000314_1704802
+C5_dades_9000314 <- read.table('C5_dades_9000314txt', header=TRUE, dec='.')
+ddaaddeess <- C5_dades_9000314
 
 ```
 
