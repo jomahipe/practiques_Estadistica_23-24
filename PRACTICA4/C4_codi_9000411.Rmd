@@ -6,7 +6,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-dades_9000411_1704802 <- read.table('C4_dades_9000411_1704802.txt', header=TRUE, dec='.')
+dades_9000411 <- read.table('C4_dades_9000411txt', header=TRUE, dec='.')
 options(digits = 12)
 
 ```
@@ -17,7 +17,7 @@ Calculeu el coeficient de variació de Pearson de l'altura dels faigs sans en %,
 
 ```{r Ex1}
 ## fem subset de faigs
-faigs <- subset(dades_9000411_1704802, arbre == 'F')
+faigs <- subset(dades_9000411, arbre == 'F')
 ## fem un altre subset només amb els faigs sans
 faigs_sans <- subset(faigs, salut == 'S') ## tot i que es pot fer aquest subset directament especificant les dues condicions salut i arbre, d'aquesta manera ja tenim faigs creat per a usos futurs
 ex1 <- (sd(faigs_sans$alt)/abs(mean(faigs_sans$alt)))*100
@@ -32,7 +32,7 @@ Determineu la recta de regressió del diàmetre respecte l'alçada en els roures
 
 ```{r Ex2}
 ## fem subset de roures
-roures <- subset(dades_9000411_1704802, arbre == 'R')
+roures <- subset(dades_9000411, arbre == 'R')
 ## determinem la recta de regressió
 regroures_diam_alc <- lm(diam~alt, data = roures)
 ## fem la mitjana de la predicció amb una alçada de 17.84
@@ -53,7 +53,7 @@ print(ex3)
 Escollim 139 arbres, a l'atzar i amb reemplaçament, entre els 1800. Calculeu la probabilitat que com a màxim 85 siguin roures.
 ```{r Ex4}
 narbres <- 139 ## mida de la mostra
-ntotal <- nrow(dades_9000411_1704802)
+ntotal <- nrow(dades_9000411)
 nroures_max <- 85 
 p_roures <- nrow(roures)/ntotal ## probabilitat de que un arbre donat sigui roure
 ex4 <- pbinom(q = nroures_max, size = narbres, prob = p_roures)
