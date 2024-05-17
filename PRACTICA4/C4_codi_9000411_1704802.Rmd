@@ -1,0 +1,70 @@
+---
+title: "Exercicis de la PRÀCTICA 3"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+dades_9000411_1704802 <- read.table('C4_dades_9000411_1704802.txt', header=TRUE, dec='.')
+options(digits = 12)
+
+```
+
+## EXERCICI 1
+
+Calculeu el coeficient de variació de Pearson de l'altura dels faigs sans en %, i.e.: doneu la resposta com 100CV.
+
+```{r Ex1}
+## fem subset de faigs
+faigs <- subset(dades_9000411_1704802, arbre == 'F')
+## fem un altre subset només amb els faigs sans
+faigs_sans <- subset(faigs, salut == 'S') ## tot i que es pot fer aquest subset directament especificant les dues condicions salut i arbre, d'aquesta manera ja tenim faigs creat per a usos futurs
+ex1 <- (sd(faigs_sans$alt)/abs(mean(faigs_sans$alt)))*100
+print(ex1)
+
+```
+
+
+## EXERCICI 2
+
+Determineu la recta de regressió del diàmetre respecte l'alçada en els roures. Quin és el diàmetre mitjà que prediu aquest model per a un roure de 17.84 m d'alçada?
+
+```{r Ex2}
+## fem subset de roures
+roures <- subset(dades_9000411_1704802, arbre == 'R')
+## determinem la recta de regressió
+regroures_diam_alc <- lm(diam~alt, data = roures)
+## fem la mitjana de la predicció amb una alçada de 17.84
+ex2 <- mean(predict(regroures_diam_alc, new_data = 17.84))
+print(ex2)
+```
+
+## EXERCICI 3
+
+Sigui X una variable amb distribució normal amb mitjana 143 i desviació típica 17. Si P{X <= x} = 0.87255, quin és el valor de x?
+```{r Ex3}
+## calculem amb la funció per a la distribució normal amb les dades donades
+ex3 <- qnorm(mean = 143, sd = 17, p = 0.87255)
+print(ex3)
+```
+
+## EXERCICI 4
+Escollim 139 arbres, a l'atzar i amb reemplaçament, entre els 1800. Calculeu la probabilitat que com a màxim 85 siguin roures.
+```{r Ex4}
+narbres <- 139 ## mida de la mostra
+ntotal <- nrow(dades_9000411_1704802)
+nroures_max <- 85 
+p_roures <- nrow(roures)/ntotal ## probabilitat de que un arbre donat sigui roure
+ex4 <- pbinom(q = nroures_max, size = narbres, prob = p_roures)
+print(ex4)
+```
+
+## EXERCICI 5
+
+Calculeu el 3er quartil (i.e.: percentil 75) del diàmetre dels faigs malalts
+```{r Ex5}
+faigs_malalts <- subset(faigs, salut == 'M')
+ex5 <- quantile(faigs_malalts$diam, probs = 0.75)
+print(ex5) ## mostra el percentil que hem calculat i el valor corresponent
+```

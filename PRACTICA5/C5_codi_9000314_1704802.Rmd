@@ -1,0 +1,116 @@
+---
+title: "Exercicis de la PRÀCTICA 5"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(digits = 12)
+library(digest)
+library(coda)
+C5_dades_9000314_1704802 <- read.table('C5_dades_9000314_1704802.txt', header=TRUE, dec='.')
+ddaaddeess <- C5_dades_9000314_1704802
+
+```
+
+## EXERCICI 1
+Sigui X una variable amb distribució normal N, amb mitjana 169 i desviació típica 18.7. Calculeu la probabilitat P{|X - 150.5| >= 18}.
+
+```{r Ex1}
+## ex1 <- pnorm(mean = 169, sd = 18.7, q >= 18)
+## print(ex1)
+## error de comparació
+```
+
+
+## EXERCICI 2
+Calculeu el valor absolut de la següent suma amb R, on s[i] és el valor de la variable "s" (de la taula de dades) corresponent al cas i.
+(de i = 4 a i = 13:) S = Σ((s[i-3])*(i!*sin^3(i)))/2^i+i^2 
+
+```{r Ex2}
+sumaE2 <- 0
+for (i in 4:13)
+  sumaE2 <- sumaE2 + (((ddaaddeess$s[i - 3]) * (factorial(i) + sin(i)^3)) / (2^i + i^2))
+ex2 <- sumaE2
+print(sumaE2)
+```
+
+## EXERCICI 3
+Calculeu la mediana de l'altura de tots els arbres.
+```{r Ex3}
+ex3 <- median(ddaaddeess$alt)
+print(ex3)
+```
+
+## EXERCICI 4
+Escollim 121 arbres, a l'atzar i amb reemplaçament, entre els 1800. Calculeu la probabilitat que com a màxim 74 siguin roures.
+```{r Ex4}
+roures <- subset(ddaaddeess, arbre == 'R')
+narbres <- 121
+nmaxroures <- 74
+probRoures <- nrow(roures) / nrow(ddaaddeess)
+ex4 <- pbinom(q = nmaxroures, size = narbres, prob = probRoures)
+print(ex4)
+```
+
+## EXERCICI 5
+
+El volum aproximat d'un arbre és el producte de (pi/4) de l'altura pel quadrat del diàmetre.
+Trobeu la mediana del volum aproximat dels roures, en metres cúbics.
+
+```{r Ex5}
+volumsRoures <- (pi/4) * roures$alt * (roures$diam / 100 )^2
+ex5 <- median(volumsRoures)
+print(ex5)
+```
+
+## EXERCICI 6
+En el BoxPlot d'una variable X, la caixa central representa els casos pels quals Q1 <= X <= Q3, on Q1 és el primer quartil de X i Q3 és el tercer quartil de X.
+Dels arbres representats a la caixa central del BoxPlot del diàmetre de tots els arbres del bosc, quina proporció són roures sans? Doneu el resultat en tant per ú.
+```{r Ex6}
+## Determinem els quartils. Farem servir unname per extreure únicament el valor que cerquem a la funció quantile, ja que per defecte aquesta dóna el quantil calculat i el seu valor.
+Q1 <- unname(quantile(ddaaddeess$diam,probs = 0.25))
+Q3 <- unname(quantile(ddaaddeess$diam,probs = 0.75))
+## Ara, fem subsets excloent els arbres fora d'aquests valors
+arbresCaixaCentral <- subset(ddaaddeess, Q1 <= diam & diam <= Q3)
+rouresSansCaixaCentral <- subset(arbresCaixaCentral, salut == 'S' & arbre == 'R')
+## Determinem la proporció
+ex6 <- nrow(rouresSansCaixaCentral) / nrow(arbresCaixaCentral)
+print(ex6)
+```
+
+## EXERCICI 7 
+El coeficient de variació de Pearson, CV, es defineix com el quocient entre la desviació típica corregida i el valor absolut de la mitjana. 
+Calculeu el coeficient de variació de Pearson de l'altura dels roures malalts en %, i.e.: doneu la resposta com 100CV.
+```{r Ex7}
+rouresMalalts <- subset(roures, salut == 'M')
+CV <- (sd(rouresMalalts$alt) / abs(mean(rouresMalalts$alt)))
+ex7 <- 100 * CV
+print(ex7)
+```
+
+## EXERCICI 8
+En el conjunt dels roures, quin és el nombre de valors diferents de la variable diàmetre?
+```{r Ex8}
+diamUnicsRoures <- unique(roures$diam)
+ex8 <- length(diamUnicsRoures)
+print(ex8)
+```
+
+## EXERCICI 9
+Quina proporció dels roures (en percentatge) tenen altura superior o igual a la mitjana de les altures dels roures?
+```{r Ex9}
+rouresGrans <- subset(roures, alt >= (mean(roures$alt)))
+ex9 <- 100 * nrow(rouresGrans) / nrow(roures) 
+print(ex9)
+```
+
+## EXERCICI 10
+Determineu la recta de regressió del diàmetre respecta l'alçada en els faigs. Quin és el diàmetre mitjà que prediu aquest model per a un faig de 13.36m d'alçada?
+```{r Ex10}
+faigs <- subset(ddaaddeess, arbre == 'F')
+regressioFaigsDiamAlc <- lm(diam~alt, data = faigs)
+ex10 <- mean(predict(regressioFaigsDiamAlc, new_data = 13.36))
+print(ex10)
+```
